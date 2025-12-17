@@ -1,0 +1,27 @@
+<form action="" method="post" enctype="multipart/form-data" onsubmit="formsubmit(event)">
+  <label>Name: </label>
+  <input type="text" name="name">
+  <br><br>
+  <label>Age: </label>
+  <input type="text" name="age">
+  <br><br>
+  <label>Image: </label>
+  <input type="file" name="profileimage">
+  <br><br>
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  function formsubmit(e){
+    e.preventDefault();
+    alert('Form submitted – but prevented by JS');
+
+    const formData = new FormData(e.target);
+
+    // Check values in console
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ':', pair[1]);
+    }
+
+  }
+</script>
