@@ -49,6 +49,9 @@ export const Header = () => {
                 <NavLink to="#">Contact</NavLink>
               </li>
               <li>
+                <NavLink to="todo">Todo</NavLink>
+              </li>
+              <li>
                 <NavLink to="/movies">Movies</NavLink>
               </li>
               <li>

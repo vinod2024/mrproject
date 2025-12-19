@@ -18,6 +18,11 @@ npm install react-bootstrap bootstrap
 5. redux toolkit. ( redux devtools )
   - redux devtools
   - npm i @redux-devtools/extension
+  - reduxjs/toolkit -> npm i @reduxjs/toolkit
+
+  react-redux -> npm i react-redux
+  npm i react-icons
+
 6. 
 
 #----------- Node -----------#
