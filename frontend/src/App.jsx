@@ -13,9 +13,13 @@ import Profile from "./components/Profile";
 import {MailVarification} from "./components/MailVarification";
 import PrivateRoute from './components/PrivateRoute';
 import TitleManager from './components/TitleManager';
+import {TodoList} from './components/TodoList';
 
 import "./App.css";
 import { Home } from './components/Home';
+import {Movies} from './components/Movies';
+import { store } from './app/store.jsx';
+import { Provider } from "react-redux";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -61,6 +65,21 @@ const App = () => {
         {
           path: '/mail-varification/:randomToken',
           element: <MailVarification />,
+        },
+
+        {
+          path: '/todo',
+          element: 
+          <Provider store={store}>
+            <TodoList />
+          </Provider>
+          ,
+          handle: { title: "Todo List" },
+        },
+        {
+          path: '/movies',
+          element: <Movies />,
+          handle: { title: "Movies" },
         },
 
         {

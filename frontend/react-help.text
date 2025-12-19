@@ -7,7 +7,7 @@ npm install react-bootstrap bootstrap
 
 
 # redux toolkit
-# xios
+# axios =>npm i axios
 
 
 // Todo
@@ -15,5 +15,24 @@ npm install react-bootstrap bootstrap
 2. login.
 3. profile update.
 4. Verify user.
+5. redux toolkit. ( redux devtools )
+  - redux devtools
+  - npm i @redux-devtools/extension
+  - reduxjs/toolkit -> npm i @reduxjs/toolkit
+
+  react-redux -> npm i react-redux
+  npm i react-icons
+
+6. 
+
+#----------- Node -----------#
+third party api
+express package list review.
+chat application.
+
+
+
+
+
 
 
