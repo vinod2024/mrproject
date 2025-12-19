@@ -37,16 +37,19 @@ export const Header = () => {
           <nav className={showMenu ? "menu-mobile" : "menu-web"}>
             <ul>
               <li>
-                <a href="/">Home</a>
+                <NavLink to="/">Home</NavLink>
               </li>
               <li>
-                <a href="#">About</a>
+                <NavLink to="#">About</NavLink>
               </li>
               <li>
-                <a href="#">Services</a>
+                <NavLink to="#">Services</NavLink>
               </li>
               <li>
-                <a href="#">Contact</a>
+                <NavLink to="#">Contact</NavLink>
+              </li>
+              <li>
+                <NavLink to="/movies">Movies</NavLink>
               </li>
               <li>
                 {/* <NavLink to={(user && parseInt(user.data.id)>0) ? '/logout' : '/login'}>{isUserLoggedIn}</NavLink> */}

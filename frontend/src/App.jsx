@@ -16,6 +16,7 @@ import TitleManager from './components/TitleManager';
 
 import "./App.css";
 import { Home } from './components/Home';
+import {Movies} from './components/Movies';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -61,6 +62,12 @@ const App = () => {
         {
           path: '/mail-varification/:randomToken',
           element: <MailVarification />,
+        },
+
+        {
+          path: '/movies',
+          element: <Movies />,
+          handle: { title: "Movies" },
         },
 
         {
