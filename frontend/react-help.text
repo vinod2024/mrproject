@@ -19,17 +19,64 @@ npm install react-bootstrap bootstrap
   - redux devtools
   - npm i @redux-devtools/extension
   - reduxjs/toolkit -> npm i @reduxjs/toolkit
-
   react-redux -> npm i react-redux
   npm i react-icons
 
-6. 
+6. redux install final from other tutorial.
+  - npm i @reduxjs/toolkit react-redux
+  - const tasks = useSelector((state) =>state.taskReducer.task); => used for get data from store.
+  const dispatch = useDispatch(); => used to perform action / add,  update data to store.
+
+7. Tanstack query (react query).
+  - npm i @tanstack/react-query => to install.
+  # How to use.
+  - import {QueryClientProvider} from "@tanstack/react-query"
+  Step 1:
+  - bind route with.
+    new queryClient = QueryClient();
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router}></RouterProvider>
+    </QueryClientProvider>
+
+  Step 2:
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ["posts], // useState replacement
+    queryFn: getPostsData // useEffect replacement,
+    //gcTime:1000, 
+    //staleTime:5000, // default 0
+    refetchInterval:1000,
+    refetchIntervalInBackground:true,
+    placeholderData: keepPreviousData
+
+  });
+
+  // if(isPending) return <p>Loading...</p>
+  // if(isError) return <p>Somethig went wrong!</p>
+
+  Step 3:
+  in this function getPostsData() simply return data.
+  res.status == 200 ? res.data : []; (in place of setStateData(res.data))
+
+  # Tanstack devtools:
+  - npm i @tanstack/react-query-devtools => install.
+  - bind it on app.
+    import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+    <ReactQueryDevtools initialIsOpen={false} />
+
+  # npm i react-intersection-observer
+
+
 
 #----------- Node -----------#
 third party api
 express package list review.
 chat application.
 
+
+#----------- ExpressJs with MySQL ------------#
+step1: npm install mysql2 sequelize
+step 2: connection.
+step 3: Schema define.
 
 
 
