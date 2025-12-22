@@ -55,6 +55,9 @@ export const Header = () => {
                 <NavLink to="/movies">Movies</NavLink>
               </li>
               <li>
+                <NavLink to="/posts">Posts</NavLink>
+              </li>
+              <li>
                 {/* <NavLink to={(user && parseInt(user.data.id)>0) ? '/logout' : '/login'}>{isUserLoggedIn}</NavLink> */}
                 <button onClick={(user && parseInt(user.data.id) > 0) ? logoutTest : loginTest}>{isUserLoggedIn}</button>
               </li>

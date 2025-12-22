@@ -3,11 +3,11 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
 // const db = require('../config/dbConnection');
-const sequelize = require("../config/dbConnection"); // sequelize
+const sequelize = require("./config/dbConnection"); // sequelize
 const user = require("../models/users.js");
-/* sequelize.sync({ alter: true })
+sequelize.sync({ alter: true })
   .then(() => console.log("Tables synced"))
-  .catch(err => console.error(err)); */
+  .catch(err => console.error(err));
 
 const randomstring = require('randomstring');
 const sendMail = require('../helpers/sendMail');
@@ -133,89 +133,75 @@ const varifyMail = (req, res) => {
     });
 }
 
-const login = async(req, res) => {
-  // console.log(req.body);
+const login = (req, res) => {
   const errors = validationResult(req);
-  console.log('errors: ', errors);
-  if(!errors.isEmpty() ){
-    console.log("test error");
+
+  /* if(!errors.isEmpty() ){
     return res.status(400).json({errors:errors.array()});
+  } */
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    });
   }
 
-  // console.log("test error 1");
+  db.query(`select * from users where email=?`, req.body.email, function(error, result, fields){
 
-  try{
-    const userData = await user.findAll({
-      where: { email: req.body.email }
-    });
+    if(error){
+      return res.status(400).send({
+        msg: error
+      });
+    }
 
-    console.log("user: ", userData);
-    // console.log("user name: ", userData[0]['email']);
-    // return false
-    if(!userData.length){
+    if(!result.length){
       return res.status(401).send({
-        msg: 'Invalid credential',
+        msg: 'Invalid credential'
       });
     }
 
     bcrypt.compare(
-          req.body.password,
-          userData[0]['password'],
-          async function(bError, bResult){
-              if(bError){
-                return res.status(400).send({
-                  msg: bError
-                });
-              }
-    
-              if(bResult){
-                const token = jwt.sign({'id':userData[0]['id'], 'role':userData[0]['role']}, JWT_SECRET, { expiresIn: '1h' } );
-    
-                //db.query(`update users set last_login_at=now() where id = '${result[0]['id']}'`);
-                /* await user.update(
-                      { last_login_at: new Date() },
-                      { where: { id: userData[0].id } }
-                    ); */
-
-                await user.update(
-                      { last_login_at: sequelize.fn("NOW") },
-                      { where: { id: userData[0].id } }
-                    );
-
-                // await userData[0].update({ last_login_at: new Date() });
-
-                return res.status(200).send({
-                  msg: 'Loggin successfully!',
-                  token:token,
-                  data: userData[0]
-                });
-    
-              }
-    
-              return res.status(401).send({
-                msg: 'Invalid credential'
-              });
-    
-    
+      req.body.password,
+      result[0]['password'],
+      function(bError, bResult){
+          if(bError){
+            return res.status(400).send({
+              msg: bError
+            });
           }
-        );
 
-  } catch (error) {
-    return res.status(400).send({
-        msg: error
-      });
-  }  
-  
-  
+          if(bResult){
+            const token = jwt.sign({'id':result[0]['id'], 'role':result[0]['role']}, JWT_SECRET, { expiresIn: '1h' } );
+
+            db.query(`update users set last_login_at=now() where id = '${result[0]['id']}'`);
+
+            return res.status(200).send({
+              msg: 'Loggin successfully!',
+              token:token,
+              data: result[0]
+            });
+
+          }
+
+          return res.status(401).send({
+            msg: 'Invalid credential'
+          });
+
+
+      }
+    );
+
+
+  });
 }
 
-const profileUpdate = async (req, res ) => {
+const profileUpdate = (req, res ) => {
   console.log("Body:", req.body);
   console.log("Files:", req.file);
 
   // check auth.
   const authToken = req.headers.authorization.split(' ')[1];
-  const tokenData = jwt.verify(authToken, JWT_SECRET);
+  const decode = jwt.verify(authToken, JWT_SECRET);
 
   const errors = validationResult(req);
   if(!errors.isEmpty() ){
@@ -223,73 +209,77 @@ const profileUpdate = async (req, res ) => {
   }
 
   // update user.
-  try {
-  // 1. Fetch only what is needed (single row)
-  const userData = await user.findOne({
-    attributes: ["id", "profile_image"],
-    where: { id: tokenData.id }
+  db.query(`select profile_image from users where id=?`,decode.id, function(error, result, fields){
+    if(error){
+      return res.status(400).send({
+        msg: error
+      });
+    }
+
+    let profileImage = result[0]['profile_image'];
+
+    if(req.file != undefined){
+      profileImage = req.file.filename;
+    }
+
+    db.query(`update users set name=?, age=?, profile_image=? where id=?`, [req.body.name, req.body.age,
+    profileImage, decode.id], function(error, result, fields){
+      if(error){
+        return res.status(400).send({
+          msg: error
+        });
+      }
+
+      return res.status(200).send({
+        msg: 'Updated successfully.'
+      });
+
+    });
+
   });
 
-  if (!userData) {
-    return res.status(404).json({ msg: "User not found" });
-  }
+  
+  
 
-  // 2. Decide profile image
-  const profileImage = req.file?.filename || userData.profile_image;
 
-  // 3. Instance update (no WHERE needed)
-  await userData.update({
-    name: req.body.name,
-    age: req.body.age,
-    profile_image: profileImage
-  });
+  // db.query(`select * from usrs where id=?`, decode.id, function(error, result, fields){
+    // if(error) throw error;
 
-  return res.status(200).json({
-    msg: "Updated successfully"
-  });
-
-} catch (error) {
-  console.error("Update Error:", error.message);
-
-  return res.status(500).json({
-    msg: "Internal server error"
-  });
-}
- 
+   /*  return res.status(200).send({
+      success: true,
+      data: result[0],
+      message: 'Fetch successfully.'
+    }); */
+  // })
 
 }
 
 // profileData
-const profileData = async (req, res ) => {
+const profileData = (req, res ) => {
   console.log("Body:", req.body);
 
   // check auth.
   const authToken = req.headers.authorization.split(' ')[1];
-  const tokenData = jwt.verify(authToken, JWT_SECRET);
+  const decode = jwt.verify(authToken, JWT_SECRET);
 
   // select user.
-  try{
-    const userData = await user.findAll({
-      where: { id: tokenData.id }
-    });
-
-    if(!userData.length){
-      return res.status(401).send({
-        msg: 'Invalid credential',
+  db.query(`select * from users where id=?`,decode.id, function(error, result, fields){
+    if(error){
+      return res.status(400).send({
+        msg: error
       });
     }
 
     return res.status(200).send({
       success: true,
-      data: userData[0],
+      data: result[0],
       message: 'Fetch successfully.'
     });
+    
+  });
 
-  } catch (error) {
-    return res.status(400).send({
-        msg: error
-      });
-  }  
+  
+
 }
 
 

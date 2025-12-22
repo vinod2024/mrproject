@@ -20,6 +20,7 @@ import { Home } from './components/Home';
 import {Movies} from './components/Movies';
 import { store } from './app/store.jsx';
 import { Provider } from "react-redux";
+import { Posts } from './components/Posts';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -80,6 +81,12 @@ const App = () => {
           path: '/movies',
           element: <Movies />,
           handle: { title: "Movies" },
+        },
+
+        {
+          path: '/posts',
+          element: <Posts/>,
+          handle: { title: "Posts" },
         },
 
         {

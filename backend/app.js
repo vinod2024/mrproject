@@ -2,11 +2,17 @@ const express = require("express");
 require("dotenv").config();
 
 const bodyParser = require("body-parser");
-const db = require("./config/dbConnection");
+
+// connection.
+// const db = require("./config/dbConnection");  // mysql
+const sequelize = require("./config/dbConnection"); // sequelize
+
+
 const PORT = process.env.PORT || 5000;
 
 const userRouter = require('./routes/userRoute');
 const webRouter = require('./routes/webRoute');
+
 
 // varifyMail
 
