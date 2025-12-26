@@ -3,6 +3,8 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
 
+import '../assets/css/bootstrap.min.css'; 
+
 export const Header = () => {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);

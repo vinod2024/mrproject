@@ -21,7 +21,7 @@ const Profile = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearrer ${user.token}`
+        "Authorization": `Bearer ${user.token}`
       },
       // body: '',
     });
@@ -121,7 +121,7 @@ const handleSubmit = async (e) => {
     headers: {
       // "Content-Type": "application/json",
       // "Content-Type": "multipart/form-data; boundary=<calculated when request is sent>",
-      "Authorization": `Bearrer ${user.token}`
+      "Authorization": `Bearer ${user.token}`
     },
     // body: JSON.stringify(formData),
     body: formData,

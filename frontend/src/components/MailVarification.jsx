@@ -29,10 +29,10 @@ export const MailVarification = () => {
     console.log("Status Code:", data);
 
      if(res.status == 200){
-      navigate("/login");
+      navigate("/login", { state: { success: data.msg } });
     } else {
-      console.log("data.messsage: ", data.message);
-      setApiMsg(data.message); 
+      console.log("data.messsage: ", data.msg);
+      setApiMsg(data.msg); 
     }
     
   }

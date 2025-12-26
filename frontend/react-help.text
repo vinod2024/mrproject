@@ -72,14 +72,18 @@ npm install react-bootstrap bootstrap
 
 #----------- Node -----------#
 third party api
+run frontend and backend.
 express package list review.
 chat application.
+OAuth
+
 
 
 #----------- ExpressJs with MySQL ------------#
 step1: npm install mysql2 sequelize
 step 2: connection.
 step 3: Schema define.
+
 
 
 
