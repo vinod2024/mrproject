@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 // Define action type.
-const ADD_TASK = "task/add";
-const DELETE_TASK = "task/delete";
+/* const ADD_TASK = "task/add";
+const DELETE_TASK = "task/delete"; */
 
 const initialState = {
   task: [],

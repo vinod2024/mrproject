@@ -3,6 +3,8 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
 
+import '../assets/css/bootstrap.min.css'; 
+
 export const Header = () => {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
@@ -53,6 +55,9 @@ export const Header = () => {
               </li>
               <li>
                 <NavLink to="/movies">Movies</NavLink>
+              </li>
+              <li>
+                <NavLink to="/posts">Posts</NavLink>
               </li>
               <li>
                 {/* <NavLink to={(user && parseInt(user.data.id)>0) ? '/logout' : '/login'}>{isUserLoggedIn}</NavLink> */}

@@ -2,11 +2,18 @@ const express = require("express");
 require("dotenv").config();
 
 const bodyParser = require("body-parser");
-const db = require("./config/dbConnection");
+
+// connection.
+// const db = require("./config/dbConnection");  // mysql
+const sequelize = require("./config/dbConnection"); // sequelize
+
+
 const PORT = process.env.PORT || 5000;
 
 const userRouter = require('./routes/userRoute');
+const postRouter = require('./routes/postRoute');
 const webRouter = require('./routes/webRoute');
+
 
 // varifyMail
 
@@ -30,6 +37,7 @@ app.use(cors({
 
 // Routing start.
 app.use('/api', userRouter);
+app.use('/api/post', postRouter);
 app.use('/', webRouter);
 
 
@@ -40,6 +48,19 @@ app.use((err, req, res, next) => {
     message: err.message
   });
 });
+
+// Sync after models loaded
+/* sequelize
+  .sync({ alter: false }) // ⚠️ use only in development
+  .then(() => {
+    console.log("Tables synced");
+    app.listen(PORT, () => {
+      console.log(`Server running on ${PORT} successfully.`);
+    });
+  })
+  .catch((err) => {
+    console.error("DB Sync Error:", err);
+  }); */
 
 app.listen(PORT, ()=>{
   console.log(`Server running on ${PORT} successfully.`);

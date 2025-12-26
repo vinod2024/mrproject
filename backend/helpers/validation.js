@@ -56,3 +56,15 @@ exports.profileValidation = [
       }
     }).withMessage('Please upload an image type png or jpeg')
 ];
+
+
+exports.postValidation = [
+  check('title')
+    .notEmpty()
+    .withMessage('title is required'),
+
+  check('body')
+    .notEmpty()
+    .withMessage('Body is required'),
+
+];

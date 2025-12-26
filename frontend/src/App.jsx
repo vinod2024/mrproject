@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AppLayout } from './layouts/AppLayout';
 
+
+
 // import { HeroSection } from "./components/HeroSection";
 // import { Header } from "./layouts/header";
 // import Footer from "./layouts/footer";
@@ -20,13 +22,18 @@ import { Home } from './components/Home';
 import {Movies} from './components/Movies';
 import { store } from './app/store.jsx';
 import { Provider } from "react-redux";
+import { Posts } from './components/Posts';
+import AddPost from './components/AddPost';
+import NavigationProvider from "./components/NavigationProvider";
 
 const App = () => {
+  
   const router = createBrowserRouter([
     {
       path: "/",
       element: (
         <>
+          <NavigationProvider />
           <TitleManager />
           <AppLayout />
         </>
@@ -80,6 +87,18 @@ const App = () => {
           path: '/movies',
           element: <Movies />,
           handle: { title: "Movies" },
+        },
+
+        {
+          path: '/posts/:pageno?',
+          element: <Posts/>,
+          handle: { title: "Posts" },
+        },
+
+        {
+          path: '/add-posts/:postId?/:page?',
+          element: <AddPost />,
+          handle: { title: "Add Posts" },
         },
 
         {

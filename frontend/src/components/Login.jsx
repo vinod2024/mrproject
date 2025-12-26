@@ -88,6 +88,12 @@ const LoginForm = () => {
         </div>
       )}
 
+      {isApiError && apiMsg && (
+        <div className="alert alert-danger">
+          {apiMsg}
+        </div>
+      )}
+
       
       <form onSubmit={handleSubmit}>
         <div>
