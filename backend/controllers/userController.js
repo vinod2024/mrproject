@@ -15,7 +15,7 @@ const sendMail = require('../helpers/sendMail');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
 
-const register = (req, res) => {
+const register = async(req, res) => {
   // console.log("Request Body:", req.body);
   const errors = validationResult(req);
 
@@ -23,114 +23,76 @@ const register = (req, res) => {
     return res.status(400).json({errors:errors.array()});
   }
 
-  db.query(
-    `SELECT * FROM users where LOWER(email) = LOWER(${db.escape(
-      req.body.email
-    )})`,
-    (error, result) => {
-      if(result && result.length){
-        return res.status(409).send({
-          msg: 'this email is already used.'
-        });
-      }
-      else {
-        bcrypt.hash(req.body.password, 10, (error, hash) => {
-          if(error){
-            return res.status(400).send({
-              msg: error
-            });
-          }
-          else{
-            db.query(
-              `insert into users (name,email,password) values (
-                '${req.body.name}', 
-                ${db.escape(req.body.email)},
-                ${db.escape(hash)}
-              )`,
-              (err, result) => {
-                if(err){
-                  return res.status(400).send({
-                    msg: err
-                  });
-                }
+  const userData = await user.findAll({
+    where: { email: req.body.email }
+  });
 
-                // send mail.
-                let mailSbuject = 'Mail Varification';
-                const randomToken = randomstring.generate();
-                const frontEndUrl = process.env.FRONTEND_URL + "mail-varification/"+randomToken;
-                // http://127.0.0.1:3000/mail-varification?token='+randomToken+'"
-                // let content = '<p>hi '+req.body.name+',<br> Please <a href={frontEndUrl}>Verify your mail.</a></p>';
-                let content = `<p>
-                                Hi ${req.body.name},<br>
-                                Please <a href="${frontEndUrl}">Verify your mail</a>.
-                              </p>`;
+  console.log("user: ", userData);
+  if(userData.length){
+    return res.status(409).send({
+      msg: 'this email is already used.',
+    });
+  }else{
+    bcrypt.hash(req.body.password, 10, async(error, hash) => {
+        if(error){
+          return res.status(400).send({
+            msg: error
+          });
+        }
+        else{
 
-                sendMail(req.body.email, mailSbuject, content);
+          try {
+            const userDataVal = {"name":req.body.name, "email":req.body.email, "password":hash};
+            const userInsertData = await user.create(userDataVal);
+            if (!userInsertData) return res.status(400).json({ msg: "User not created." });
+            
+            // send mail.
+            let mailSbuject = 'Mail Varification';
+            const randomToken = randomstring.generate();
+            const frontEndUrl = process.env.FRONTEND_URL + "mail-varification/"+randomToken;
+            let content = `<p>
+                            Hi ${req.body.name},<br>
+                            Please <a href="${frontEndUrl}">Verify your mail</a>.
+                          </p>`;
+            sendMail(req.body.email, mailSbuject, content);
+            
+            // update. , {"email":req.body.email}
+            const updateToken = await userInsertData.update({"token":randomToken});
+            if(!updateToken) return res.status(500).json({ msg: "User token not created." });
 
-                  db.query(`update users set token=? where email=?`, [randomToken, req.body.email], function(error, result, fields){
-                  if(error){
-                    return res.status(400).send({
-                      msg: error
-                    });
-                  }
+            return res.status(201).json({ success: true, data: userInsertData, msg: "User has been register" });
 
-                  return res.status(201).send({
-                    msg: 'User has been register'
-                  });
-                  
-                });
-
-                
-                
-              }
-            );
-          }
-        });
-      }
-    }
-
-
-  );
-
+          } catch (error) {
+            return res.status(400).json({ success: false, msg: error.message });
+          }                
+              
+          
+        }
+      });
+  }
+ 
 }
 
-const varifyMail = (req, res) => {
+const varifyMail = async(req, res) => {
 
     var token = req.query.token;
-    db.query(`select * from users where token=? limit 1`, token, function(error, result, fields){
-
-      if(error){
-        // console.log(error.message);
-        return res.status(400).send({
-          message: error.message
+    try {
+        const userData = await user.findOne({
+          where: { "token": token }
         });
-      }
-
-      if(result.length > 0){
-        db.query(`update users set token=null, is_varified='1' where id='${result[0].id}'`, function(error, result, fields){
-          if(error){
-            // console.log(error.message);
-            return res.status(400).send({
-              message: error.message
-            });
-          }
-          return res.status(200).send({
-            message: 'Mail varified successfully!'
-          });
-          // return res.render('mail-varification', {message: 'Mail varified successfully!'});
-        });
+        if (!userData) return res.status(404).json({ success: false, msg: "Token mismatch" });
         
-      }else{
-        // return res.render('404');
-        return res.status(404).send({
-          message: 'Token mismatch.'
-        });
+        // update.
+        const userActive = await userData.update({"token": null, "is_varified": "1", "is_active":"1"});
+        console.log("userActive: ", userActive);
 
-        // res.status(404).json({message:'Token mismatch.'});
-      }
+        if(!userActive) return res.status(400).json({success: false, msg: "User not activated" });
 
-
-    });
+        return res.status(200).send({ success: true, msg: 'Mail varified successfully!' });
+    } catch (error) {
+      return res.status(500).json({ success: false, msg: error.msg });
+    }
+    
 }
 
 const login = async(req, res) => {

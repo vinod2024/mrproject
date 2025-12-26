@@ -27,7 +27,8 @@ const User = sequelize.define("Users", {
   },
   contact_no: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    defaultValue:1111111
   },
   profile_image: {
     type: DataTypes.STRING,
