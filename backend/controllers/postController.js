@@ -1,6 +1,6 @@
 const express = require('express');
+const redisClient = require("../redis/redisClient");
 const { validationResult } = require('express-validator');
-
 const sequelize = require("../config/dbConnection"); // sequelize
 const Post = require("../models/posts.js");
 const { where } = require('sequelize');
@@ -41,15 +41,37 @@ const getPostList = async (req, res) => {
     const limit = parseInt(req.query.limit) || 5;
     const offset = (page - 1) * limit;
 
+    const cachedKey = "post:alldata:page:" + page;
+    const cachedPost = await redisClient.get(cachedKey);
+
+    
     // 2️⃣ Sequelize pagination
-    const { rows, count } = await Post.findAndCountAll({
+    /* const { rows, count } = await Post.findAndCountAll({
       limit,
       offset,
       order: [["created_at", "DESC"]],
-    });
+    }); */
 
+    let postData;
+    if(cachedPost){
+      console.log("post from redis");
+      postData = await JSON.parse(cachedPost);      
+      // console.log('postData', postData);
+    }else{
+      console.log("data from db");
+      postData = await Post.findAndCountAll({
+        limit,
+        offset,
+        order: [["created_at", "DESC"]],
+      });
+      
+      await redisClient.set(cachedKey, JSON.stringify(postData), { EX: 3600 }); 
+      
+    }
+    const {rows, count} = postData;
+    
     // 3️⃣ Calculate total pages
-    const totalPages = Math.ceil(count / limit);
+    const totalPages = await Math.ceil(count / limit);
 
     // 4️⃣ Send response
     return res.status(200).json({ success: true, data: rows, msg: 'list data successfully.', 

@@ -1,7 +1,13 @@
 const express = require("express");
 require("dotenv").config();
-
 const bodyParser = require("body-parser");
+
+/****** Custom code *********/
+// require("./utils/news_cron");  
+/* const logger = require('./utils/mrlogger');
+logger.info("this is dummy message");
+logger.error("this is dummy error"); */
+
 
 // connection.
 // const db = require("./config/dbConnection");  // mysql
@@ -12,7 +18,9 @@ const PORT = process.env.PORT || 5000;
 
 const userRouter = require('./routes/userRoute');
 const postRouter = require('./routes/postRoute');
+// const newsRouter = require('./routes/newsRoute');
 const webRouter = require('./routes/webRoute');
+const stripeRouter = require('./routes/stripeRoute');
 
 
 // varifyMail
@@ -38,6 +46,8 @@ app.use(cors({
 // Routing start.
 app.use('/api', userRouter);
 app.use('/api/post', postRouter);
+app.use('/api/stripe', stripeRouter);
+// app.use('/api/news', newsRouter);
 app.use('/', webRouter);
 
 

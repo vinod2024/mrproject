@@ -1,8 +1,8 @@
-const express = require('express');
+  const express = require('express');
 
-const router = express.Router();
-const { postValidation } = require('../helpers/validation');
-const postController = require('../controllers/postController');
+  const router = express.Router();
+  const { postValidation } = require('../helpers/validation');
+  const postController = require('../controllers/postController');
 
 const auth = require('../middleware/auth');
 

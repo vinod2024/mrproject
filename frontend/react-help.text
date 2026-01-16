@@ -71,11 +71,23 @@ npm install react-bootstrap bootstrap
 
 
 #----------- Node -----------#
-third party api
+third party api --> done
 run frontend and backend.
 express package list review.
 chat application.
 OAuth
+log uses -- winston package. --> done
+
+npm install compression
+npm install express-rate-limit
+npm install helmet
+npm install express-validator
+npm install http-errors
+
+
+#-------cache ----------#
+1. node-cache package
+2. node-redis => npm i redis
 
 
 
@@ -84,9 +96,14 @@ step1: npm install mysql2 sequelize
 step 2: connection.
 step 3: Schema define.
 
+#----------------- Server ---------------#
+1. ttl, radis -> cache. --> done
+2. aws
+#---------- Stripe payment -----------#
+npm i express stripe
 
-
-
+#----------- database ----------#
+sequelize relation. -->done
 
 
 
