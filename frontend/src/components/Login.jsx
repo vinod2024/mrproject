@@ -90,6 +90,18 @@ const GoogleLoginButton = () => {
   );
 };
 
+// FacebookLoginButton
+const FacebookLoginButton = () => {
+  const handleFacebookLogin = () => {
+    window.location.href = "http://localhost:3001/auth/facebook";
+  };
+  return (
+    <button onClick={handleFacebookLogin}>
+      Continue with Facebook
+    </button>
+  );
+};
+
   return (
     <div style={{ maxWidth: "400px", margin: "50px auto" }}>
       <h2>Login</h2>
@@ -140,6 +152,9 @@ const GoogleLoginButton = () => {
       <br/>
       {/* <NavLink to="/auth/google">Sign In with Google</NavLink> */}
       <GoogleLoginButton />
+      <br />
+      <FacebookLoginButton />
+
     </div>
   );
 };

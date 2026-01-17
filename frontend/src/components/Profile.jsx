@@ -192,7 +192,18 @@ const handleSubmit = async (e) => {
             onChange={handleInputChange}
           />
           {errors.profileimage && <p style={{ color: "red" }}>{errors.profileimage}</p>}
-          <img src={`http://127.0.0.1:3001/images/${signUpData.profile_image}`} alt="" width="100" />
+          {signUpData?.profile_image && (
+            <img
+              src={
+                signUpData.provider === "web"
+                  ? `http://127.0.0.1:3001/images/${signUpData.profile_image}`
+                  : signUpData.profile_image
+              }
+              alt="Profile"
+              width="100"
+            />
+          )}
+
         </div>
 
         <br />
