@@ -78,6 +78,18 @@ const LoginForm = () => {
   console.log("API Response:", data);
 };
 
+const GoogleLoginButton = () => {
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:3001/auth/google";
+  };
+
+  return (
+    <button onClick={handleGoogleLogin}>
+      Continue with Google
+    </button>
+  );
+};
+
   return (
     <div style={{ maxWidth: "400px", margin: "50px auto" }}>
       <h2>Login</h2>
@@ -125,6 +137,9 @@ const LoginForm = () => {
       </form>
 
       <NavLink to="/sign-up">SignUp</NavLink>
+      <br/>
+      {/* <NavLink to="/auth/google">Sign In with Google</NavLink> */}
+      <GoogleLoginButton />
     </div>
   );
 };

@@ -1,4 +1,6 @@
 const express = require('express');
+const passport = require("passport");
+const googleOAuth = require("../middleware/google-oauth");
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
@@ -255,11 +257,72 @@ const profileData = async (req, res ) => {
 }
 
 
+// google login.
+const googleLogin = async (req, res) => {
+  res.send('<a href="/auth/google">Sign In with Google</a>');
+}
+
+// google googleCallBack.
+
+
+// profile.
+const profile = async (req, res) => {
+  console.log("User:", req.user);
+
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    return res.redirect('/');
+  }
+  res.send('Welcome, ' + req.user.displayName + '! <a href="/google-logout">Logout</a>'+`
+    <img src="${req.user.photos[0].value}">`);
+}
+
+// google-logout
+const googleLogout = async (req, res) => {
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+}
+
+// googleCallBack
+/* const googleCallBack = (req, res, next) => {
+  passport.authenticate("google", {
+    failureRedirect: "http://localhost:5174/login",
+    successRedirect: "http://localhost:5174/movies"
+  })(req, res, next);
+}; */
+
+const googleCallBack = (req, res, next) => {
+  passport.authenticate("google", { session: false }, (err, userData) => {
+    if (err || !userData) {
+      return res.redirect("http://localhost:5174/login");
+    }
+
+    console.log("user daataa: ", userData);
+    // console.log('name: ', userData[0]['name']);
+
+    /* const token = jwt.sign(
+      { id: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    ); */
+    const token = jwt.sign({'id':userData[0]['id'], 'role':userData[0]['role']}, JWT_SECRET, { expiresIn: '1h' } );
+
+    res.redirect(
+      `http://localhost:5174/oauth-success?token=${token}`
+    );
+  })(req, res, next);
+};
+
 module.exports = {
   register,
   varifyMail,
   login,
   profileData,
   profileUpdate,
+  googleLogin,
+  profile,
+  googleLogout,
+  googleCallBack
   // updateProfileForm
 }
