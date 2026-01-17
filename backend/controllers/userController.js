@@ -1,6 +1,7 @@
 const express = require('express');
 const passport = require("passport");
 const googleOAuth = require("../middleware/google-oauth");
+const facebookOAuth = require("../middleware/facebook-oauth");
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
@@ -314,6 +315,22 @@ const googleCallBack = (req, res, next) => {
   })(req, res, next);
 };
 
+// facebookCallBack
+const facebookCallBack = (req, res, next) => {
+  passport.authenticate("facebook", { session: false }, (err, userData) => {
+    if (err || !userData) {
+      return res.redirect("http://localhost:5174/login");
+    }
+
+    console.log("user daataa: ", userData);
+    const token = jwt.sign({'id':userData[0]['id'], 'role':userData[0]['role']}, JWT_SECRET, { expiresIn: '1h' } );
+
+    res.redirect(
+      `http://localhost:5174/oauth-success?token=${token}`
+    );
+  })(req, res, next);
+};
+
 module.exports = {
   register,
   varifyMail,
@@ -323,6 +340,7 @@ module.exports = {
   googleLogin,
   profile,
   googleLogout,
-  googleCallBack
+  googleCallBack,
+  facebookCallBack
   // updateProfileForm
 }
