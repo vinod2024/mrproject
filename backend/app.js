@@ -1,4 +1,7 @@
 const express = require("express");
+const passport = require("passport");
+const session = require("express-session");
+
 require("dotenv").config();
 const bodyParser = require("body-parser");
 
@@ -22,11 +25,17 @@ const postRouter = require('./routes/postRoute');
 const webRouter = require('./routes/webRoute');
 const stripeRouter = require('./routes/stripeRoute');
 
-
 // varifyMail
-
-
 const app = express();
+
+// session setup.
+app.use(session({
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: true
+}))
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -38,7 +47,7 @@ app.use(express.urlencoded({ extended: false })); */
 
 const cors = require("cors");
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "http://localhost:5174",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));

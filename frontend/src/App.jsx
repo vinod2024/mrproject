@@ -11,6 +11,8 @@ import ErrorPage from './layouts/errorPage';
 
 import LoginForm from "./components/Login";
 import Signup from "./components/Signup";
+// import GoogleSignup from "./components/GoogleSignup";
+
 import Profile from "./components/Profile";
 import {MailVarification} from "./components/MailVarification";
 import PrivateRoute from './components/PrivateRoute';
@@ -25,6 +27,8 @@ import { Provider } from "react-redux";
 import { Posts } from './components/Posts';
 import AddPost from './components/AddPost';
 import NavigationProvider from "./components/NavigationProvider";
+
+import OAuthSuccess from "./components/oauth-success";
 
 const App = () => {
   
@@ -68,6 +72,18 @@ const App = () => {
           element: <Signup />,
           handle: { title: "SignUp" },
         },
+
+        /* {
+          path: '/auth/google',
+          element: <GoogleSignup />,
+          handle: { title: "Google SignUp" },
+        }, */
+
+        {
+          path: '/oauth-success',
+          element: <OAuthSuccess />,
+        },
+        
 
         {
           path: '/mail-varification/:randomToken',
