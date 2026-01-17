@@ -84,6 +84,10 @@ npm install helmet
 npm install express-validator
 npm install http-errors
 
+#----- passport-google-oauth20 --#
+npm install passport express-session
+npm install passport-google-oauth20
+
 
 #-------cache ----------#
 1. node-cache package
